@@ -1,7 +1,13 @@
 import React, { Component } from "react";
 import { Alert, Table, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEdit,
+  faTrashAlt,
+  faPlus,
+  faMinus,
+  faPlay
+} from "@fortawesome/free-solid-svg-icons";
 import TeamNameModal from "./TeamNameModal";
 
 export class TeamTable extends Component {
@@ -19,7 +25,8 @@ export class TeamTable extends Component {
         { teamName: "SOG", teamPoints: "666" },
         { teamName: "Śpiące Leniwce", teamPoints: "325" },
         { teamName: "Random Fandom", teamPoints: "0" }
-      ]
+      ],
+      currentTeam: -1
     };
   }
 
@@ -49,6 +56,14 @@ export class TeamTable extends Component {
     }
   }
 
+  teamRotate = () => {
+    if (this.state.currentTeam !== this.state.teams.length - 1) {
+      this.setState({ currentTeam: this.state.currentTeam + 1 });
+    } else {
+      this.setState({ currentTeam: 0 });
+    }
+  };
+
   teamModalHandler = () => {
     this.setState({ teamModalOpen: !this.state.teamModalOpen });
   };
@@ -75,17 +90,45 @@ export class TeamTable extends Component {
         <Table striped bordered hover size='sm'>
           <thead>
             <tr>
+              <th>NOW</th>
               <th>#</th>
               <th>Team Name</th>
               <th style={{ textAlign: "right" }}>Points</th>
+              <th style={{ textAlign: "center" }}>
+                <Button size={"sm"} onClick={this.teamRotate} block>
+                  NEXT
+                </Button>
+              </th>
             </tr>
           </thead>
           <tbody>
             {this.state.teams.map((teams, i) => {
               return (
                 <tr key={i}>
+                  <td>
+                    <Button
+                      block
+                      size={"sm"}
+                      ct={i}
+                      variant={
+                        this.state.currentTeam === i
+                          ? "success"
+                          : "outline-success"
+                      }
+                    >
+                      <FontAwesomeIcon icon={faPlay} />
+                    </Button>
+                  </td>
                   <td>{i + 1}</td>
-                  <td>{teams.teamName}</td>
+                  <td
+                    style={
+                      this.state.currentTeam === i
+                        ? { fontWeight: "bold" }
+                        : null
+                    }
+                  >
+                    {teams.teamName}
+                  </td>
                   <td style={{ textAlign: "right" }}>
                     <div className='d-flex justify-content-between'>
                       <Button
@@ -95,7 +138,7 @@ export class TeamTable extends Component {
                         variant='success'
                         onClick={this.teamPointsChange.bind(this)}
                       >
-                        ∆
+                        <FontAwesomeIcon icon={faPlus} />
                       </Button>
                       {teams.teamPoints}
                       <Button
@@ -105,7 +148,7 @@ export class TeamTable extends Component {
                         variant='danger'
                         onClick={this.teamPointsChange.bind(this)}
                       >
-                        ∇
+                        <FontAwesomeIcon icon={faMinus} />
                       </Button>
                     </div>
                   </td>

@@ -4,6 +4,8 @@ import Header from "./comps/Header";
 import { Container, Row, Col } from "react-bootstrap";
 import TeamTable from "./comps/TeamTable";
 import QuestionsPanel from "./comps/QuestionsPanel";
+import NewWindow from "react-new-window";
+import ProjectorWindow from "./comps/ProjectorWindow";
 
 function App() {
   return (
@@ -19,6 +21,9 @@ function App() {
             <QuestionsPanel />
           </Col>
         </Row>
+        <NewWindow>
+          <ProjectorWindow />
+        </NewWindow>
       </Container>
     </div>
   );
