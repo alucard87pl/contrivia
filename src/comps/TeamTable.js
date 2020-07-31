@@ -13,10 +13,11 @@ import TeamNameModal from "./TeamNameModal";
 export class TeamTable extends Component {
   constructor(props) {
     super(props)
-    this.state = { ...props }
   }
 
+  componentWillReceiveProps() {
 
+  }
 
   render() {
     return (
