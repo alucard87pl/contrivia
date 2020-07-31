@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Header from "./comps/Header";
 import { Container, Row, Col } from "react-bootstrap";
@@ -7,26 +7,129 @@ import QuestionsPanel from "./comps/QuestionsPanel";
 import NewWindow from "react-new-window";
 import ProjectorWindow from "./comps/ProjectorWindow";
 
-function App() {
-  return (
-    <div className='App'>
-      <Header />
-      <br />
-      <Container fluid>
-        <Row>
-          <Col xl={3}>
-            <TeamTable />
-          </Col>
-          <Col>
-            <QuestionsPanel />
-          </Col>
-        </Row>
-        <NewWindow>
-          <ProjectorWindow />
-        </NewWindow>
-      </Container>
-    </div>
-  );
+
+
+
+export class App extends Component {
+
+  constructor() {
+    super();
+
+    this.addTeam = this.addTeam.bind(this);
+    this.removeTeam = this.removeTeam.bind(this);
+    this.teamPointsChange = this.teamPointsChange.bind(this);
+    this.setCurrentTeam = this.setCurrentTeam.bind(this);
+    this.projectorModeToggle = this.projectorModeToggle.bind(this);
+
+    this.state = {
+      projectorWindowOpen: false,
+      projectorMode: false,
+      teamModalOpen: false,
+      teams: [
+        { teamName: "SOG", teamPoints: "666" },
+        { teamName: "Śpiące Leniwce", teamPoints: "325" },
+        { teamName: "Random Fandom", teamPoints: "0" },
+        { teamName: "Rakieta Odbytu", teamPoints: "100" },
+        { teamName: "Ten jeden z tyłu", teamPoints: "100" },
+
+      ],
+      currentTeam: -1
+    };
+  }
+
+  teamPointsChange(team) {
+    var teamToModify = team.currentTarget.getAttribute("teamid");
+    var teamModName = this.state.teams[teamToModify].teamName;
+    var direction = team.currentTarget.getAttribute("pointsAction");
+    var currentTeamPoints = this.state.teams[teamToModify].teamPoints;
+    console.log(teamToModify, teamModName, direction, currentTeamPoints);
+    let newState = Object.assign({}, this.state);
+    switch (direction) {
+      case "inc":
+        console.log(teamModName + " zdobywają punkt!");
+        newState.teams[teamToModify].teamPoints =
+          parseInt(newState.teams[teamToModify].teamPoints) + 1;
+        this.setState(newState);
+        break;
+      case "dec":
+        console.log(teamModName + " tracą punkt!");
+        newState.teams[teamToModify].teamPoints =
+          parseInt(newState.teams[teamToModify].teamPoints) - 1;
+        this.setState(newState);
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  projectorModeToggle() {
+    this.setState({ projectorMode: !this.state.projectorMode })
+  }
+
+  teamRotate = () => {
+    if (this.state.currentTeam !== this.state.teams.length - 1) {
+      this.setState({ currentTeam: this.state.currentTeam + 1 });
+    } else {
+      this.setState({ currentTeam: 0 });
+    }
+  };
+
+  teamModalHandler = () => {
+    this.setState({ teamModalOpen: !this.state.teamModalOpen });
+  };
+
+  addTeam(name) {
+    this.setState(prevState => ({
+      teams: [...prevState.teams, { teamName: name, teamPoints: 0 }]
+    }));
+  }
+  removeTeam(teamToRemove) {
+    console.log(teamToRemove.currentTarget.value);
+    var newTeamList = [...this.state.teams]; // make a separate copy of the array
+    var index = teamToRemove.currentTarget.value;
+    if (index !== -1) {
+      newTeamList.splice(index, 1);
+      this.setState({ teams: newTeamList });
+    }
+  }
+  setCurrentTeam(teamToSet) {
+    console.log(teamToSet.currentTarget.getAttribute("ct"));
+    this.setState({ currentTeam: parseInt(teamToSet.currentTarget.getAttribute("ct")) })
+  }
+  render() {
+    return (
+      <div className='App'>
+        <Header
+          mode={this.state.projectorMode}
+          projectorModeToggle={this.projectorModeToggle} />
+        <br />
+        <Container fluid>
+          <Row>
+            <Col xl={3}>
+              <TeamTable
+                teams={this.state.teams}
+                curentTeam={this.state.currentTeam}
+                setCurrentTeam={this.setCurrentTeam}
+                teamPointsChange={this.teamPointsChange}
+                removeTeam={this.removeTeam}
+                teamModalHandler={this.teamModalHandler}
+                teamRotate={this.teamRotate}
+              />
+            </Col>
+            <Col>
+              <QuestionsPanel />
+            </Col>
+          </Row>
+          {this.state.projectorWindowOpen ?
+            <NewWindow>
+              <ProjectorWindow mode={this.state.projectorMode} projectorModeToggle={this.projectorModeToggle} />
+            </NewWindow>
+            : null}
+        </Container>
+      </div>
+    );
+  }
 }
 
 export default App;

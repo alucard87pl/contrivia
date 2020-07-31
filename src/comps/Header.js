@@ -4,6 +4,7 @@ import { Navbar, Button } from "react-bootstrap";
 export default class Header extends Component {
   constructor(props) {
     super(props);
+
   }
 
   render() {
@@ -11,7 +12,11 @@ export default class Header extends Component {
       <div>
         <Navbar bg='dark' variant='dark'>
           <Navbar.Brand href='#home'>ConTrivia</Navbar.Brand>
-          <Button variant='danger'>SPAWN QUIZ WINDOW</Button>
+          <Button onClick={this.props.projectorWindowOpen} variant='danger'>SPAWN QUIZ WINDOW</Button>
+          &nbsp;
+          <Button onClick={this.props.projectorModeToggle}
+            variant='danger'>MODE: {this.props.mode ? "RANKING" : "QUESTION"}</Button>
+
         </Navbar>
       </div>
     );

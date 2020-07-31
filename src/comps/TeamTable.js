@@ -11,77 +11,13 @@ import {
 import TeamNameModal from "./TeamNameModal";
 
 export class TeamTable extends Component {
-  constructor() {
-    super();
-
-    this.addTeam = this.addTeam.bind(this);
-    this.removeTeam = this.removeTeam.bind(this);
-    this.teamPointsChange = this.teamPointsChange.bind(this);
-
-    this.state = {
-      addNewTeam: "",
-      teamModalOpen: false,
-      teams: [
-        { teamName: "SOG", teamPoints: "666" },
-        { teamName: "Śpiące Leniwce", teamPoints: "325" },
-        { teamName: "Random Fandom", teamPoints: "0" }
-      ],
-      currentTeam: -1
-    };
+  constructor(props) {
+    super(props)
+    this.state = { ...props }
   }
 
-  teamPointsChange(team) {
-    var teamToModify = team.currentTarget.getAttribute("teamid");
-    var teamModName = this.state.teams[teamToModify].teamName;
-    var direction = team.currentTarget.getAttribute("pointsAction");
-    var currentTeamPoints = this.state.teams[teamToModify].teamPoints;
-    console.log(teamToModify, teamModName, direction, currentTeamPoints);
-    let newState = Object.assign({}, this.state);
-    switch (direction) {
-      case "inc":
-        console.log(teamModName + " zdobywają punkt!");
-        newState.teams[teamToModify].teamPoints =
-          parseInt(newState.teams[teamToModify].teamPoints) + 1;
-        this.setState(newState);
-        break;
-      case "dec":
-        console.log(teamModName + " tracą punkt!");
-        newState.teams[teamToModify].teamPoints =
-          parseInt(newState.teams[teamToModify].teamPoints) - 1;
-        this.setState(newState);
-        break;
 
-      default:
-        break;
-    }
-  }
 
-  teamRotate = () => {
-    if (this.state.currentTeam !== this.state.teams.length - 1) {
-      this.setState({ currentTeam: this.state.currentTeam + 1 });
-    } else {
-      this.setState({ currentTeam: 0 });
-    }
-  };
-
-  teamModalHandler = () => {
-    this.setState({ teamModalOpen: !this.state.teamModalOpen });
-  };
-
-  addTeam(name) {
-    this.setState(prevState => ({
-      teams: [...prevState.teams, { teamName: name, teamPoints: 0 }]
-    }));
-  }
-  removeTeam(teamToRemove) {
-    console.log(teamToRemove.currentTarget.value);
-    var newTeamList = [...this.state.teams]; // make a separate copy of the array
-    var index = teamToRemove.currentTarget.value;
-    if (index !== -1) {
-      newTeamList.splice(index, 1);
-      this.setState({ teams: newTeamList });
-    }
-  }
   render() {
     return (
       <Alert key={TeamTable} variant={"dark"}>
@@ -93,25 +29,26 @@ export class TeamTable extends Component {
               <th>NOW</th>
               <th>#</th>
               <th>Team Name</th>
-              <th style={{ textAlign: "right" }}>Points</th>
+              <th style={{ textAlign: "center" }}>Points</th>
               <th style={{ textAlign: "center" }}>
-                <Button size={"sm"} onClick={this.teamRotate} block>
+                <Button size={"sm"} onClick={this.props.teamRotate.bind(this)} block>
                   NEXT
                 </Button>
               </th>
             </tr>
           </thead>
           <tbody>
-            {this.state.teams.map((teams, i) => {
+            {this.props.teams.sort((a, b) => b.teamPoints - a.teamPoints).map((teams, i) => {
               return (
                 <tr key={i}>
                   <td>
                     <Button
+                      onClick={this.props.setCurrentTeam.bind(this)}
                       block
                       size={"sm"}
                       ct={i}
                       variant={
-                        this.state.currentTeam === i
+                        this.props.currentTeam === i
                           ? "success"
                           : "outline-success"
                       }
@@ -122,7 +59,7 @@ export class TeamTable extends Component {
                   <td>{i + 1}</td>
                   <td
                     style={
-                      this.state.currentTeam === i
+                      this.props.currentTeam === i
                         ? { fontWeight: "bold" }
                         : null
                     }
@@ -136,7 +73,7 @@ export class TeamTable extends Component {
                         pointsaction='inc'
                         size='sm'
                         variant='success'
-                        onClick={this.teamPointsChange.bind(this)}
+                        onClick={this.props.teamPointsChange.bind(this)}
                       >
                         <FontAwesomeIcon icon={faPlus} />
                       </Button>
@@ -146,7 +83,7 @@ export class TeamTable extends Component {
                         pointsaction='dec'
                         size='sm'
                         variant='danger'
-                        onClick={this.teamPointsChange.bind(this)}
+                        onClick={this.props.teamPointsChange.bind(this)}
                       >
                         <FontAwesomeIcon icon={faMinus} />
                       </Button>
@@ -160,7 +97,7 @@ export class TeamTable extends Component {
                       value={i}
                       size='sm'
                       variant='danger'
-                      onClick={this.removeTeam.bind(this)}
+                      onClick={this.props.removeTeam.bind(this)}
                     >
                       <FontAwesomeIcon icon={faTrashAlt} />
                     </Button>
@@ -170,8 +107,8 @@ export class TeamTable extends Component {
             })}
             <tr>
               <td colSpan='4' style={{ textAlign: "center" }}>
-                <Button block size='sm' onClick={this.teamModalHandler}>
-                  Add Team #{this.state.teams.length + 1}
+                <Button block size='sm' onClick={this.props.teamModalHandler}>
+                  Add Team #{this.props.teams.length + 1}
                 </Button>
               </td>
             </tr>
@@ -179,9 +116,9 @@ export class TeamTable extends Component {
         </Table>
         <TeamNameModal
           onSubmit={this.addTeam}
-          onHide={this.teamModalHandler}
-          show={this.state.teamModalOpen}
-          teamNumber={this.state.teams.length + 1}
+          onHide={this.props.teamModalHandler}
+          show={this.props.teamModalOpen}
+          teamNumber={this.props.teams.length + 1}
         />
       </Alert>
     );
