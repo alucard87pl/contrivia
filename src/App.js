@@ -20,10 +20,12 @@ export class App extends Component {
     this.teamPointsChange = this.teamPointsChange.bind(this);
     this.setCurrentTeam = this.setCurrentTeam.bind(this);
     this.projectorModeToggle = this.projectorModeToggle.bind(this);
+    this.spawnProjector = this.spawnProjector.bind(this);
+    this.teamModalHandler = this.teamModalHandler.bind(this);
 
     this.state = {
-      projectorWindowOpen: false,
-      projectorMode: false,
+      projectorOpen: false,
+      projectorMode: true,
       teamModalOpen: false,
       teams: [
         { teamName: "SOG", teamPoints: "666" },
@@ -63,6 +65,10 @@ export class App extends Component {
     }
   }
 
+  spawnProjector() {
+    this.setState({ projectorOpen: !this.state.projectorOpen })
+  }
+
   projectorModeToggle() {
     this.setState({ projectorMode: !this.state.projectorMode })
   }
@@ -75,7 +81,7 @@ export class App extends Component {
     }
   };
 
-  teamModalHandler = () => {
+  teamModalHandler() {
     this.setState({ teamModalOpen: !this.state.teamModalOpen });
   };
 
@@ -101,6 +107,8 @@ export class App extends Component {
     return (
       <div className='App'>
         <Header
+          projectorOpen={this.state.projectorOpen}
+          spawnProjector={this.spawnProjector}
           mode={this.state.projectorMode}
           projectorModeToggle={this.projectorModeToggle} />
         <br />
@@ -109,11 +117,13 @@ export class App extends Component {
             <Col xl={3}>
               <TeamTable
                 teams={this.state.teams}
-                curentTeam={this.state.currentTeam}
+                currentTeam={this.state.currentTeam}
                 setCurrentTeam={this.setCurrentTeam}
                 teamPointsChange={this.teamPointsChange}
+                addTeam={this.addTeam}
                 removeTeam={this.removeTeam}
                 teamModalHandler={this.teamModalHandler}
+                teamModalOpen={this.state.teamModalOpen}
                 teamRotate={this.teamRotate}
               />
             </Col>
@@ -121,9 +131,11 @@ export class App extends Component {
               <QuestionsPanel />
             </Col>
           </Row>
-          {this.state.projectorWindowOpen ?
-            <NewWindow>
-              <ProjectorWindow mode={this.state.projectorMode} projectorModeToggle={this.projectorModeToggle} />
+          {this.state.projectorOpen ?
+            <NewWindow onUnload={this.spawnProjector}>
+              <ProjectorWindow
+                mode={this.state.projectorMode}
+                teams={this.state.teams} />
             </NewWindow>
             : null}
         </Container>

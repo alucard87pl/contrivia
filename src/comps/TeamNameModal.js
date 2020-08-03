@@ -5,18 +5,15 @@ export default class TeamNameModal extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      teamNumber: this.props.teamNumber,
-      teamName: ""
-    };
+    this.state = { teamName: "" }
   }
   nameChange = e => {
     this.setState({ teamName: e.target.value });
   };
 
   submit = () => {
-    this.props.onSubmit(this.state.teamName);
-    this.setState({ teamName: "", teamNumber: this.state.teamNumber + 1 });
+    this.props.addTeam(this.state.teamName);
+    this.setState({ teamName: "", teamNumber: this.props.teamNumber + 1 });
   };
 
   render() {
@@ -29,7 +26,7 @@ export default class TeamNameModal extends Component {
         onHide={this.props.onHide}
       >
         <Modal.Header closeButton>
-          <Modal.Title>{"Add Team #" + this.state.teamNumber}</Modal.Title>
+          <Modal.Title>{"Add Team #" + this.props.teamNumber}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Group as={Row} controlId='teamName'>
@@ -40,7 +37,7 @@ export default class TeamNameModal extends Component {
               <Form.Control
                 type='text'
                 value={this.state.teamName}
-                placeholder={"Team #" + this.state.teamNumber}
+                placeholder={"Team #" + this.props.teamNumber}
                 onChange={this.nameChange}
               />
             </Col>

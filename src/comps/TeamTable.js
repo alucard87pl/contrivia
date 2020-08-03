@@ -15,8 +15,12 @@ export class TeamTable extends Component {
     super(props)
   }
 
-  componentWillReceiveProps() {
-
+  componentDidUpdate(prevProps) {
+    if (prevProps.changedProp !== this.props.changedProp) {
+      this.setState({
+        changedProp: this.props.changedProp
+      });
+    }
   }
 
   render() {
@@ -116,7 +120,7 @@ export class TeamTable extends Component {
           </tbody>
         </Table>
         <TeamNameModal
-          onSubmit={this.addTeam}
+          addTeam={this.props.addTeam}
           onHide={this.props.teamModalHandler}
           show={this.props.teamModalOpen}
           teamNumber={this.props.teams.length + 1}

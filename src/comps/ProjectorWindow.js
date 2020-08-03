@@ -1,8 +1,15 @@
 import React, { Component } from "react";
+import ProjectorTeamTable from "./ProjectorTeamTable";
+import ProjectorQuestion from "./ProjectorQuestion";
 
 export class ProjectorWindow extends Component {
+  constructor(props) {
+    super(props)
+  }
   render() {
-    return <div>Drugie okno będzie tu!</div>;
+    return <>
+      {this.props.mode ? <ProjectorTeamTable teams={this.props.teams} /> : <ProjectorQuestion />}
+    </>;
   }
 }
 
