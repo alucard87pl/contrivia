@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useCallback, useContext } from 'react'
 import { Table, Button } from 'react-bootstrap'
 import { TeamsContext } from '../providers/TeamsProvider'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -7,14 +7,14 @@ import { faEdit, faMinus, faPlay, faPlus, faTrashAlt } from '@fortawesome/free-s
 const TeamTable = () => {
   const { teams, setTeams } = useContext(TeamsContext)
 
-  const handleChangePoints = (e) => {
+  const handleChangePoints = useCallback((e) => {
     const localTeams = [...teams]
     const teamId = e.currentTarget.getAttribute('data-team-id')
     const points = e.currentTarget.getAttribute('data-points')
 
     localTeams[teamId].points = localTeams[teamId].points + Number(points)
     setTeams(localTeams)
-  }
+  }, [teams, setTeams])
 
   return (
     <Table
@@ -29,11 +29,14 @@ const TeamTable = () => {
           <th>#</th>
           <th>Team Name</th>
           <th style={{ textAlign: 'center' }}>
-              Points
+            Points
           </th>
           <th style={{ textAlign: 'center' }}>
-            <Button size={'sm'} onClick={() => {}} block>
-                NEXT
+            <Button
+              size={'sm'}
+              block
+            >
+              NEXT
             </Button>
           </th>
         </tr>
@@ -107,7 +110,7 @@ const TeamTable = () => {
         <tr>
           <td colSpan='4' style={{ textAlign: 'center' }}>
             <Button block size='sm'>
-                Add Team #{teams.length + 1}
+              Add Team #{teams.length + 1}
             </Button>
           </td>
         </tr>
