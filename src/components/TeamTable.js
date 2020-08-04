@@ -12,8 +12,12 @@ const TeamTable = () => {
     const teamId = e.currentTarget.getAttribute('data-team-id')
     const points = e.currentTarget.getAttribute('data-points')
 
-    localTeams[teamId].points = localTeams[teamId].points + Number(points)
-    setTeams(localTeams)
+    const teamIndex = localTeams.findIndex((team) => team.id === Number(teamId))
+
+    if (teamIndex !== -1) {
+      localTeams[teamIndex].points = localTeams[teamIndex].points + Number(points)
+      setTeams(localTeams)
+    }
   }, [teams, setTeams])
 
   return (
@@ -66,7 +70,6 @@ const TeamTable = () => {
                 <td style={{ textAlign: 'right' }}>
                   <div className='d-flex justify-content-between'>
                     <Button
-                      teamid={index}
                       size='sm'
                       variant='success'
                       data-team-id={team.id}
@@ -77,7 +80,6 @@ const TeamTable = () => {
                     </Button>
                     {team.points}
                     <Button
-                      teamid={index}
                       size='sm'
                       variant='danger'
                       data-team-id={team.id}
