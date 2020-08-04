@@ -3,9 +3,11 @@ import { Table, Button } from 'react-bootstrap'
 import { TeamsContext } from '../providers/TeamsProvider'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faMinus, faPlay, faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import { SelectedTeamContext } from '../providers/SelectedTeamProvider'
 
 const TeamTable = () => {
   const { teams, setTeams } = useContext(TeamsContext)
+  const { selectedTeam, setSelectedTeam } = useContext(SelectedTeamContext)
 
   const handleChangePoints = useCallback((e) => {
     const localTeams = [...teams]
@@ -19,6 +21,20 @@ const TeamTable = () => {
       setTeams(localTeams)
     }
   }, [teams, setTeams])
+
+  const handleNextTeam = () => {
+    const sortedTeams = teams.sort((teamA, teamB) => Number(teamA.id) < Number(teamB.id))
+    if (typeof selectedTeam === 'number') {
+      const currentIndex = teams.findIndex((team) => team.id === selectedTeam)
+      if (currentIndex === teams.length - 1) {
+        setSelectedTeam(sortedTeams[0].id)
+      } else {
+        setSelectedTeam(sortedTeams[currentIndex + 1].id)
+      }
+      return null
+    }
+    setSelectedTeam(sortedTeams[0].id)
+  }
 
   return (
     <Table
@@ -39,6 +55,7 @@ const TeamTable = () => {
             <Button
               size={'sm'}
               block
+              onClick={handleNextTeam}
             >
               NEXT
             </Button>
@@ -48,23 +65,28 @@ const TeamTable = () => {
       <tbody>
         {
           teams
-            .sort((a, b) => b.points - a.points)
-            .map((team, index) => (
+            .sort((teamA, teamB) => teamA.id < teamB.id)
+            .map((team) => (
               <tr key={team.id}>
                 <td>
                   <Button
                     block
                     size={'sm'}
-                    ct={index}
                     data-team-id={team.id}
+                    variant={
+                      selectedTeam === team.id
+                        ? 'success'
+                        : 'outline-success'
+                    }
+                    onClick={() => setSelectedTeam(team.id)}
                   >
                     <FontAwesomeIcon icon={faPlay}/>
                   </Button>
                 </td>
                 <td>
-                  {index + 1}
+                  {team.id}
                 </td>
-                <td>
+                <td style={{ fontWeight: selectedTeam === team.id ? 'bold' : null }}>
                   {team.name}
                 </td>
                 <td style={{ textAlign: 'right' }}>
@@ -92,14 +114,12 @@ const TeamTable = () => {
                 </td>
                 <td style={{ textAlign: 'right' }}>
                   <Button
-                    value={index}
                     size='sm'
                     variant='warning'
                   >
                     <FontAwesomeIcon icon={faEdit}/>
                   </Button>
                   <Button
-                    value={index}
                     size='sm'
                     variant='danger'
                   >
@@ -112,7 +132,7 @@ const TeamTable = () => {
         <tr>
           <td colSpan='4' style={{ textAlign: 'center' }}>
             <Button block size='sm'>
-              Add Team #{teams.length + 1}
+            Add Team #{teams.length + 1}
             </Button>
           </td>
         </tr>

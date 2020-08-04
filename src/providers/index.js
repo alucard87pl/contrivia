@@ -3,12 +3,15 @@ import TeamsProvider from './TeamsProvider'
 import * as PropTypes from 'prop-types'
 import ProjectorProvider from './ProjectorProvider'
 import TeamInputModalProvider from './TeamInputModalProvider'
+import SelectedTeamProvider from './SelectedTeamProvider'
 
 const AllProviders = ({ children }) => (
   <TeamsProvider>
     <ProjectorProvider>
       <TeamInputModalProvider>
-        {children}
+        <SelectedTeamProvider>
+          {children}
+        </SelectedTeamProvider>
       </TeamInputModalProvider>
     </ProjectorProvider>
   </TeamsProvider>
