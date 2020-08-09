@@ -130,7 +130,7 @@ const TeamTable = () => {
             ))
         }
         <tr>
-          <td colSpan='4' style={{ textAlign: 'center' }}>
+          <td colSpan='5' style={{ textAlign: 'center' }}>
             <Button block size='sm'>
               Add Team #{teams.length + 1}
             </Button>
