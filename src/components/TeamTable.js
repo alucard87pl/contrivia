@@ -80,11 +80,11 @@ const TeamTable = () => {
                     }
                     onClick={() => setSelectedTeam(team.id)}
                   >
-                    <FontAwesomeIcon icon={faPlay}/>
+                    <FontAwesomeIcon icon={faPlay} />
                   </Button>
                 </td>
                 <td>
-                  {team.id}
+                  {team.id + 1}
                 </td>
                 <td style={{ fontWeight: selectedTeam === team.id ? 'bold' : null }}>
                   {team.name}
@@ -98,7 +98,7 @@ const TeamTable = () => {
                       data-points={1}
                       onClick={handleChangePoints}
                     >
-                      <FontAwesomeIcon icon={faPlus}/>
+                      <FontAwesomeIcon icon={faPlus} />
                     </Button>
                     {team.points}
                     <Button
@@ -108,7 +108,7 @@ const TeamTable = () => {
                       data-points={-1}
                       onClick={handleChangePoints}
                     >
-                      <FontAwesomeIcon icon={faMinus}/>
+                      <FontAwesomeIcon icon={faMinus} />
                     </Button>
                   </div>
                 </td>
@@ -117,13 +117,13 @@ const TeamTable = () => {
                     size='sm'
                     variant='warning'
                   >
-                    <FontAwesomeIcon icon={faEdit}/>
+                    <FontAwesomeIcon icon={faEdit} />
                   </Button>
                   <Button
                     size='sm'
                     variant='danger'
                   >
-                    <FontAwesomeIcon icon={faTrashAlt}/>
+                    <FontAwesomeIcon icon={faTrashAlt} />
                   </Button>
                 </td>
               </tr>
@@ -132,7 +132,7 @@ const TeamTable = () => {
         <tr>
           <td colSpan='4' style={{ textAlign: 'center' }}>
             <Button block size='sm'>
-            Add Team #{teams.length + 1}
+              Add Team #{teams.length + 1}
             </Button>
           </td>
         </tr>
