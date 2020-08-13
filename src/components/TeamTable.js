@@ -22,8 +22,8 @@ const TeamTable = () => {
     }
   }, [teams, setTeams])
 
-  const handleNextTeam = () => {
-    const sortedTeams = teams.sort((teamA, teamB) => Number(teamA.id) < Number(teamB.id))
+  const handleNextTeam = useCallback(() => {
+    const sortedTeams = teams.sort((teamA, teamB) => Number(teamA.id) < Number(teamB.id) ? -1 : 1)
     if (typeof selectedTeam === 'number') {
       const currentIndex = teams.findIndex((team) => team.id === selectedTeam)
       if (currentIndex === teams.length - 1) {
@@ -34,7 +34,7 @@ const TeamTable = () => {
       return null
     }
     setSelectedTeam(sortedTeams[0].id)
-  }
+  }, [teams, selectedTeam, setSelectedTeam])
 
   return (
     <Table
@@ -65,7 +65,7 @@ const TeamTable = () => {
       <tbody>
         {
           teams
-            .sort((teamA, teamB) => teamA.id < teamB.id)
+            .sort((teamA, teamB) => teamA.id < teamB.id ? -1 : 1)
             .map((team) => (
               <tr key={team.id}>
                 <td>
