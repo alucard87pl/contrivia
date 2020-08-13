@@ -24,6 +24,7 @@ const TeamTable = () => {
 
   const handleNextTeam = useCallback(() => {
     const sortedTeams = teams.sort((teamA, teamB) => Number(teamA.id) < Number(teamB.id) ? -1 : 1)
+
     if (typeof selectedTeam === 'number') {
       const currentIndex = teams.findIndex((team) => team.id === selectedTeam)
       if (currentIndex === teams.length - 1) {
@@ -33,8 +34,14 @@ const TeamTable = () => {
       }
       return null
     }
+
     setSelectedTeam(sortedTeams[0].id)
   }, [teams, selectedTeam, setSelectedTeam])
+
+  const handleSetTeam = useCallback((e) => {
+    const teamId = e.currentTarget.getAttribute('data-team-id')
+    setSelectedTeam(Number(teamId))
+  }, [setSelectedTeam])
 
   return (
     <Table
@@ -78,7 +85,7 @@ const TeamTable = () => {
                         ? 'success'
                         : 'outline-success'
                     }
-                    onClick={() => setSelectedTeam(team.id)}
+                    onClick={handleSetTeam}
                   >
                     <FontAwesomeIcon icon={faPlay}/>
                   </Button>
