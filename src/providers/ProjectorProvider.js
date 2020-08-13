@@ -23,8 +23,6 @@ const ProjectorProvider = ({ children }) => {
         isProjectorOpen &&
         <NewWindow
           title="Projector"
-          features={{ innerHeight: "fit-content", innerWidth: "fit-content", location: "off" }}
-          center="screen"
           onUnload={() => setProjectorOpen(false)}>
           <ProjectorWindow />
         </NewWindow>
