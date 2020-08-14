@@ -1,13 +1,18 @@
-import React, { useCallback, useContext } from 'react'
+import React, { useCallback, useContext, useMemo } from 'react'
 import { Table, Button } from 'react-bootstrap'
 import { TeamsContext } from '../providers/TeamsProvider'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faMinus, faPlay, faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { SelectedTeamContext } from '../providers/SelectedTeamProvider'
+import last from 'lodash/last'
 
 const TeamTable = () => {
   const { teams, setTeams } = useContext(TeamsContext)
-  const { selectedTeam, setSelectedTeam } = useContext(SelectedTeamContext)
+  const { selectedTeamId, setSelectedTeamId } = useContext(SelectedTeamContext)
+
+  const sortedTeams = useMemo(() => {
+    return teams.sort((teamA, teamB) => teamA.id < teamB.id ? -1 : 1)
+  }, [teams])
 
   const handleChangePoints = useCallback((e) => {
     const localTeams = [...teams]
@@ -23,25 +28,18 @@ const TeamTable = () => {
   }, [teams, setTeams])
 
   const handleNextTeam = useCallback(() => {
-    const sortedTeams = teams.sort((teamA, teamB) => Number(teamA.id) < Number(teamB.id) ? -1 : 1)
-
-    if (typeof selectedTeam === 'number') {
-      const currentIndex = teams.findIndex((team) => team.id === selectedTeam)
-      if (currentIndex === teams.length - 1) {
-        setSelectedTeam(sortedTeams[0].id)
-      } else {
-        setSelectedTeam(sortedTeams[currentIndex + 1].id)
-      }
-      return null
+    if (typeof selectedTeamId === 'number' && selectedTeamId !== last(teams).id) {
+      setSelectedTeamId(selectedTeamId + 1)
+      return
     }
 
-    setSelectedTeam(sortedTeams[0].id)
-  }, [teams, selectedTeam, setSelectedTeam])
+    setSelectedTeamId(sortedTeams[0].id)
+  }, [teams, selectedTeamId, setSelectedTeamId, sortedTeams])
 
   const handleSetTeam = useCallback((e) => {
     const teamId = e.currentTarget.getAttribute('data-team-id')
-    setSelectedTeam(Number(teamId))
-  }, [setSelectedTeam])
+    setSelectedTeamId(Number(teamId))
+  }, [setSelectedTeamId])
 
   return (
     <Table
@@ -71,70 +69,68 @@ const TeamTable = () => {
       </thead>
       <tbody>
         {
-          teams
-            .sort((teamA, teamB) => teamA.id < teamB.id ? -1 : 1)
-            .map((team) => (
-              <tr key={team.id}>
-                <td>
-                  <Button
-                    block
-                    size={'sm'}
-                    data-team-id={team.id}
-                    variant={
-                      selectedTeam === team.id
-                        ? 'success'
-                        : 'outline-success'
-                    }
-                    onClick={handleSetTeam}
-                  >
-                    <FontAwesomeIcon icon={faPlay}/>
-                  </Button>
-                </td>
-                <td>
-                  {team.id}
-                </td>
-                <td style={{ fontWeight: selectedTeam === team.id ? 'bold' : null }}>
-                  {team.name}
-                </td>
-                <td style={{ textAlign: 'right' }}>
-                  <div className='d-flex justify-content-between'>
-                    <Button
-                      size='sm'
-                      variant='success'
-                      data-team-id={team.id}
-                      data-points={1}
-                      onClick={handleChangePoints}
-                    >
-                      <FontAwesomeIcon icon={faPlus}/>
-                    </Button>
-                    {team.points}
-                    <Button
-                      size='sm'
-                      variant='danger'
-                      data-team-id={team.id}
-                      data-points={-1}
-                      onClick={handleChangePoints}
-                    >
-                      <FontAwesomeIcon icon={faMinus}/>
-                    </Button>
-                  </div>
-                </td>
-                <td style={{ textAlign: 'right' }}>
+          sortedTeams.map((team) => (
+            <tr key={team.id}>
+              <td>
+                <Button
+                  block
+                  size={'sm'}
+                  data-team-id={team.id}
+                  variant={
+                    selectedTeamId === team.id
+                      ? 'success'
+                      : 'outline-success'
+                  }
+                  onClick={handleSetTeam}
+                >
+                  <FontAwesomeIcon icon={faPlay}/>
+                </Button>
+              </td>
+              <td>
+                {team.id}
+              </td>
+              <td style={{ fontWeight: selectedTeamId === team.id ? 'bold' : null }}>
+                {team.name}
+              </td>
+              <td style={{ textAlign: 'right' }}>
+                <div className='d-flex justify-content-between'>
                   <Button
                     size='sm'
-                    variant='warning'
+                    variant='success'
+                    data-team-id={team.id}
+                    data-points={1}
+                    onClick={handleChangePoints}
                   >
-                    <FontAwesomeIcon icon={faEdit}/>
+                    <FontAwesomeIcon icon={faPlus}/>
                   </Button>
+                  {team.points}
                   <Button
                     size='sm'
                     variant='danger'
+                    data-team-id={team.id}
+                    data-points={-1}
+                    onClick={handleChangePoints}
                   >
-                    <FontAwesomeIcon icon={faTrashAlt}/>
+                    <FontAwesomeIcon icon={faMinus}/>
                   </Button>
-                </td>
-              </tr>
-            ))
+                </div>
+              </td>
+              <td style={{ textAlign: 'right' }}>
+                <Button
+                  size='sm'
+                  variant='warning'
+                >
+                  <FontAwesomeIcon icon={faEdit}/>
+                </Button>
+                <Button
+                  size='sm'
+                  variant='danger'
+                >
+                  <FontAwesomeIcon icon={faTrashAlt}/>
+                </Button>
+              </td>
+            </tr>
+          ))
         }
         <tr>
           <td colSpan='4' style={{ textAlign: 'center' }}>

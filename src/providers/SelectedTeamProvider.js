@@ -2,15 +2,15 @@ import React, { createContext, useState } from 'react'
 import * as PropTypes from 'prop-types'
 
 export const SelectedTeamContext = createContext({
-  selected: undefined
+  selectedTeamId: undefined
 })
 
 const SelectedTeamProvider = ({ children }) => {
-  const [selectedTeam, setSelectedTeam] = useState(undefined)
+  const [selectedTeamId, setSelectedTeamId] = useState(undefined)
 
   const value = {
-    selectedTeam,
-    setSelectedTeam
+    selectedTeamId,
+    setSelectedTeamId
   }
 
   return (
