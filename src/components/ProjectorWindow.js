@@ -13,9 +13,11 @@ const ProjectorWindow = () => (
         <h1>
           This is an example multiple choice question.
         </h1>
-        <img src="https://fakeimg.pl/1280x720"
-          alt={"rich content"}
-          style={{ width: "auto", minHeight: "500px", maxHeight: "500px" }} />
+        <img
+          src='https://fakeimg.pl/1280x720'
+          alt='rich content'
+          style={{ width: 'auto', minHeight: '500px', maxHeight: '500px' }}
+        />
       </Jumbotron>
 
       <Row>
