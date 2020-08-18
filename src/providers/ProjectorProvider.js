@@ -22,8 +22,9 @@ const ProjectorProvider = ({ children }) => {
       {
         isProjectorOpen &&
         <NewWindow
-          title="Projector"
-          onUnload={() => setProjectorOpen(false)}>
+          title='Projector'
+          onUnload={() => setProjectorOpen(false)}
+        >
           <ProjectorWindow />
         </NewWindow>
       }
